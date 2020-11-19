@@ -21,14 +21,107 @@ slidenumbers: true
 
 # Agenda
 
-- What's new in v6.1.0
 - Meet Cubit
 - Cubit vs. Bloc
+- What's new in v6.1.0
 - Live Coding
 
 ---
 
-# What's New?
+# Meet Cubit
+
+> Cubit = Bloc - Events
+
+[.column]
+![inline 41%](./cubit_architecture.png)
+
+[.column]
+![inline 41%](./bloc_architecture.png)
+
+---
+
+[.column]
+
+## Cubit
+
+![inline](./cubit_flow.png)
+
+[.column]
+
+## Bloc
+
+![inline](./bloc_flow.png)
+
+---
+
+# CounterCubit
+
+```dart
+import 'package:bloc/bloc.dart';
+
+class CounterCubit extends Cubit<int> {
+  CounterCubit() : super(0);
+
+  void increment() => emit(state + 1);
+}
+```
+
+---
+
+# Cubit vs. Bloc
+
+[.column]
+
+**Cubit**
+
+```dart
+class CounterCubit extends Cubit<int> {
+  CounterCubit() : super(0);
+
+  void increment() => emit(state + 1);
+}
+```
+
+[.column]
+
+**Bloc**
+
+```dart
+enum CounterEvent { increment }
+
+class CounterBloc extends Bloc<CounterEvent, int> {
+  CounterBloc() : super(0);
+
+  @override
+  Stream<int> mapEventToState(CounterEvent event) async* {
+    switch (event) {
+      case CounterEvent.increment:
+        yield state + 1;
+        break;
+    }
+  }
+}
+```
+
+---
+
+Cubit vs. Bloc
+
+|                     | Cubit | Bloc |
+| ------------------- | :---: | :--: |
+| Simple              |  ✅   |      |
+| Concise             |  ✅   |      |
+| Traceable           |       |  ✅  |
+| ReactiveX Operators |       |  ✅  |
+| Testable            |  ✅   |  ✅  |
+| Scalable            |  ✅   |  ✅  |
+| Tooling Support     |  ✅   |  ✅  |
+
+---
+
+# What's New in v6.1.0?
+
+# ✨✨✨
 
 ---
 
@@ -243,28 +336,42 @@ Widget build(BuildContext context) {
 
 ---
 
-# Bloc Test Seeding State
+# Decision Tree
+
+![inline](./decision_tree.png)
+
+---
+
+# Bloc Test Scenario
 
 ```dart
-// BEFORE 😬
 blocTest<CounterBloc, int>(
-  'emits [1, 2] when increment is called and state is 1',
+  'emits 100 when increment is called and state is 99',
   build: () => CounterBloc(),
   act: (bloc) {
     bloc
       ..add(CounterEvent.increment)
-      ..add(CounterEvent.increment);
+      ..add(CounterEvent.increment)
+      ..add(CounterEvent.increment)
+      ..add(CounterEvent.increment)
+      ..add(CounterEvent.increment)
+      ...
   },
-  expect: const <int>[1, 2],
+  expect: const <int>[100],
 );
+```
 
-// NOW 😎
+---
+
+# Bloc Test Seed State
+
+```dart
 blocTest<CounterBloc, int>(
-  'emits [2] when increment is called and state is 1',
+  'emits 100 when increment is called and state is 99',
   build: () => CounterBloc(),
-  seed: 1,
+  seed: 99,
   act: (bloc) => bloc.add(CounterEvent.increment),
-  expect: const <int>[2],
+  expect: const <int>[100],
 );
 ```
 
@@ -276,102 +383,11 @@ blocTest<CounterBloc, int>(
 
 ---
 
-# Meet Cubit
-
-> Cubit = Bloc - Events
-
-[.column]
-![inline 41%](./cubit_architecture.png)
-
-[.column]
-![inline 41%](./bloc_architecture.png)
-
----
-
-[.column]
-
-## Cubit
-
-![inline](./cubit_flow.png)
-
-[.column]
-
-## Bloc
-
-![inline](./bloc_flow.png)
-
----
-
-# CounterCubit
-
-```dart
-import 'package:bloc/bloc.dart';
-
-class CounterCubit extends Cubit<int> {
-  CounterCubit() : super(0);
-
-  void increment() => emit(state + 1);
-}
-```
-
----
-
-# Cubit vs. Bloc
-
-[.column]
-
-**Cubit**
-
-```dart
-class CounterCubit extends Cubit<int> {
-  CounterCubit() : super(0);
-
-  void increment() => emit(state + 1);
-}
-```
-
-[.column]
-
-**Bloc**
-
-```dart
-enum CounterEvent { increment }
-
-class CounterBloc extends Bloc<CounterEvent, int> {
-  CounterBloc() : super(0);
-
-  @override
-  Stream<int> mapEventToState(CounterEvent event) async* {
-    switch (event) {
-      case CounterEvent.increment:
-        yield state + 1;
-        break;
-    }
-  }
-}
-```
-
----
-
-Cubit vs. Bloc
-
-|                     | Cubit | Bloc |
-| ------------------- | :---: | :--: |
-| Simple              |  ✅   |      |
-| Concise             |  ✅   |      |
-| Traceable           |       |  ✅  |
-| ReactiveX Operators |       |  ✅  |
-| Testable            |  ✅   |  ✅  |
-| Scalable            |  ✅   |  ✅  |
-| Tooling Support     |  ✅   |  ✅  |
-
----
-
 # Live Coding
 
 # 👩‍💻👨‍💻
 
-### https://github.com/felangel/bloc/blob/master/packages/flutter_bloc/example
+### https://github.com/felangel/cubit\_and\_beyond/tree/main/example
 
 ---
 
