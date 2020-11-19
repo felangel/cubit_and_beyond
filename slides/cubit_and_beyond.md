@@ -357,7 +357,7 @@ blocTest<CounterBloc, int>(
       ..add(CounterEvent.increment)
       ...
   },
-  expect: const <int>[100],
+  expect: const <int>[1, 2, 3, ..., 99, 100],
 );
 ```
 
